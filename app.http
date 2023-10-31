@@ -1,0 +1,8 @@
+# post http://localhost:3002/register/
+# ###
+# post http://localhost:3002/login/
+# ###
+# get http://localhost:3002/user/tweets/feed/
+# ###
+
+# get http://localhost:3002/user/following/
