@@ -1,8 +1,11 @@
-# post http://localhost:3002/register/
-# ###
-# post http://localhost:3002/login/
-# ###
-# get http://localhost:3002/user/tweets/feed/
-# ###
+post http://localhost:3002/register/
+###
+post http://localhost:3002/login/
+###
+get http://localhost:3002/user/tweets/feed/
+###
 
-# get http://localhost:3002/user/following/
+get http://localhost:3002/user/following/
+
+###
+DELETE  http://localhost:3002/tweets/:tweetId/
