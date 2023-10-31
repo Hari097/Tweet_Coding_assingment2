@@ -41,15 +41,15 @@ SELECT
   return arrayPeople;
 };
 
-const validation = (request, response, next) => {
+const authentication = (request, response, next) => {
   let jwtToken;
   const authHeader = request.headers["authorization"];
-  if (authHeader !== undefined) {
+  if (authHeader) {
     jwtToken = authHeader.split(" ")[1];
   }
 
   if (jwtToken) {
-    jwt.verify(jwtToken, "MY_SECRET_TOKEN", (error, payload) => {
+    jwt.verify(jwtToken, "SECRET_KEY", (error, payload) => {
       if (error) {
         response.status(401);
         response.send("Invalid JWT Token");
@@ -140,7 +140,7 @@ app.post("/login/", async (request, response) => {
         username,
         userId: userLogin.user_id,
       };
-      const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
+      const jwtToken = jwt.sign(payload, "SECRET_KEY");
       response.send({ jwtToken });
     } else {
       response.status(400);
@@ -149,7 +149,7 @@ app.post("/login/", async (request, response) => {
   }
 });
 // API:3
-app.get("/user/tweets/feed/", validation, async (request, response) => {
+app.get("/user/tweets/feed/", authentication, async (request, response) => {
   const { username } = request;
   const followingPeopleId = getFollowingPeopleIds(username);
   const getTweetQuery = `
@@ -165,7 +165,7 @@ app.get("/user/tweets/feed/", validation, async (request, response) => {
   response.send(tweet);
 });
 // API:4
-app.get("/user/following/", validation, async (request, response) => {
+app.get("/user/following/", authentication, async (request, response) => {
   const { username, userId } = request;
   const getFollowingQuery = `
 SELECT
@@ -178,7 +178,7 @@ name
   response.send(followingPeople);
 });
 // API:5
-app.get("/user/following/", validation, async (request, response) => {
+app.get("/user/following/", authentication, async (request, response) => {
   const { username, userId } = request;
   const getFollowingQuery = `
 SELECT DISTINCT
@@ -193,7 +193,7 @@ name
 // API:6
 app.get(
   "/tweets/:tweetId/",
-  validation,
+  authentication,
   tweetAccessVerification,
   async (request, response) => {
     const { username, userId } = request;
@@ -217,7 +217,7 @@ app.get(
 // API:7
 app.get(
   "/tweets/:tweetId/likes/",
-  validation,
+  authentication,
   tweetAccessVerification,
   async (request, response) => {
     const { tweetId } = request.params;
@@ -238,7 +238,7 @@ app.get(
 
 app.get(
   "/tweets/:tweetId/replies/",
-  validation,
+  authentication,
   tweetAccessVerification,
   async (request, response) => {
     const { tweetId } = request.params;
@@ -254,7 +254,7 @@ app.get(
 );
 
 // API:9
-app.get("/user/tweets/", validation, async (request, response) => {
+app.get("/user/tweets/", authentication, async (request, response) => {
   const { userId } = request;
   const getTweetsQuery = `
   SELECT
@@ -278,7 +278,7 @@ app.get("/user/tweets/", validation, async (request, response) => {
 });
 
 // API:10
-app.post("/user/tweets/", validation, async (request, response) => {
+app.post("/user/tweets/", authentication, async (request, response) => {
   const { tweet } = request.body;
   const getUserId = parseInt(request.userId);
   const dateTime = new Date().toJSON().substring(0, 19).replace("T", " ");
@@ -290,7 +290,7 @@ app.post("/user/tweets/", validation, async (request, response) => {
   response.send("Created a Tweet");
 });
 
-app.delete("/tweets/:tweetId/", validation, async (request, response) => {
+app.delete("/tweets/:tweetId/", authentication, async (request, response) => {
   const { tweetId } = request.params;
   const { userId } = request;
   const getTweetQuery = `SELECT * FROM tweet WHERE user_id = ${userId} AND tweet_id = ${tweetId}`;
