@@ -1,4 +1,11 @@
 post http://localhost:3002/register/
+Content-Type: application/json
+{
+  "username":"adam_richard",
+  "password":"richard_567",
+  "name":"Adam Richard",
+  "gender":"male"
+}
 ###
 post http://localhost:3002/login/
 ###

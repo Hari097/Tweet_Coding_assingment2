@@ -100,12 +100,12 @@ app.post("/register/", async (request, response) => {
         const hashPassword = await bcrypt.hash(password, 7);
         const createUserQuery = `
         INSERT INTO
-          user (name, username,password, gender)
+          user (username,password, name,gender)
         VALUES
           (
-            '${name}',
             '${username}',
             '${hashPassword}',
+            '${name}',
             '${gender}',
 
           )`;
